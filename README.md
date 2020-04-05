@@ -38,7 +38,6 @@ unannounced breaking changes regularly.
  - `name`: A friendly name for the button
  - `type`: Either `"button"` or `"button-plus"` for myStrom Wifi button or
    myStrom Wifi Button Plus respectively
-
  - `wheelMin` _(button-plus only)_: Minimum value for the wheel
  - `wheelMax` _(button-plus only)_: Maximum value for the wheel 
  - `wheelSpeed` _(button-plus only; optional; default: 1)_: Multiplier for the
