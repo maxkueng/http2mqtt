@@ -18,7 +18,6 @@ export function assertSchema<T>(schema: Joi.Schema, input: any): asserts input i
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function validate<T>(schema: Joi.Schema, input: any): T {
-  console.log(input);
   const {
     error,
     value,

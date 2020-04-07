@@ -67,9 +67,11 @@ const configSchema = Joi.object({
 });
 
 export function getConfig(configPath: string): Configuration {
+  console.log(`Config path: ${configPath}`);
   const resolvedPath = path.resolve(configPath);
   const fileContents = fs.readFileSync(resolvedPath, 'utf-8');
   const configFile = JSON.parse(fileContents);
+  console.log(JSON.stringify(configFile, null, '  '));
 
   const config = {
     ...defaultConfig,
