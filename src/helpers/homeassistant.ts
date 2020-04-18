@@ -3,6 +3,7 @@
 export enum ComponentType {
   Sensor = 'sensor',
   BinarySensor = 'binary_sensor',
+  Switch = 'switch',
 }
 
 export type Template = string;
@@ -210,6 +211,74 @@ export function marshalSensorConfig(config: HASensorConfig): string {
     state_topic,
     unique_id,
     unit_of_measurement,
+    value_template,
+  }, null, '  ');
+}
+
+export interface HASwitchConfig {
+  availabilityTopic?: string;
+  commandTopic?: string;
+  device?: DeviceInfo;
+  icon?: string;
+  jsonAttributesTemplate?: Template;
+  jsonAttributesTopic?: string;
+  name?: string;
+  optimistic?: boolean;
+  payloadAvailable?: string;
+  payloadUnavailable?: string;
+  payloadOff?: string;
+  payloadOn?: string;
+  qos?: number;
+  retain?: boolean;
+  stateOff?: string;
+  stateOn?: string;
+  stateTopic?: string;
+  uniqueID?: string;
+  valueTemplate?: Template;
+}
+
+export function marshalSwitchConfig(config: HASwitchConfig): string {
+  const {
+    availabilityTopic: availability_topic,
+    commandTopic: command_topic,
+    device,
+    icon,
+    jsonAttributesTemplate: json_attributes_template,
+    jsonAttributesTopic: json_attributes_topic,
+    name,
+    optimistic,
+    payloadAvailable: payload_available,
+    payloadUnavailable: payload_not_available,
+    payloadOff: payload_off,
+    payloadOn: payload_on,
+    qos,
+    retain,
+    stateOff: state_off,
+    stateOn: state_on,
+    stateTopic: state_topic,
+    uniqueID: unique_id,
+    valueTemplate: value_template,
+  } = config;
+
+  return JSON.stringify({
+    availability_topic,
+    command_topic,
+    device: formatDeviceInfo(device),
+    icon,
+    json_attributes_template,
+    json_attributes_topic,
+    name,
+    optimistic,
+    payload_available,
+    payload_not_available,
+    payload_off,
+    payload_on,
+    qos,
+    retain,
+    state_off,
+    state_on,
+    state_topic,
+    unique_id,
     value_template,
   }, null, '  ');
 }
