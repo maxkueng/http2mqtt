@@ -73,7 +73,7 @@ export default function discovery(
   const getBinarySensorConfig = (
     button: ButtonConfig,
     actionID: ActionID,
-  ): homeAssistantHelpers.BinarySensorConfig => {
+  ): homeAssistantHelpers.HABinarySensorConfig => {
     const actionName = helpers.getActionName(actionID);
     return {
       name: `${button.name} ${actionName}`,
@@ -90,7 +90,7 @@ export default function discovery(
   const getSensorConfig = (
     button: ButtonConfig,
     actionID: ActionID,
-  ): homeAssistantHelpers.SensorConfig => {
+  ): homeAssistantHelpers.HASensorConfig => {
     const actionName = helpers.getActionName(actionID);
     return {
       name: `${button.name} ${actionName}`,

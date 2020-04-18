@@ -55,7 +55,7 @@ export enum BinarySensorDeviceClass {
 }
 
 // https://www.home-assistant.io/integrations/binary_sensor.mqtt/#configuration-variables
-export interface BinarySensorConfig {
+export interface HABinarySensorConfig {
   availabilityTopic?: string;
   device?: DeviceInfo;
   deviceClass?: BinarySensorDeviceClass;
@@ -98,6 +98,8 @@ function formatDeviceInfo(device: DeviceInfo | undefined): HADeviceInfo | undefi
   };
 }
 
+export function marshalBinarySensorConfig(config: HABinarySensorConfig): string {
+  const {
     availabilityTopic: availability_topic,
     device,
     deviceClass: device_class,
@@ -152,7 +154,7 @@ export enum SensorDeviceClass {
 }
 
 // https://www.home-assistant.io/integrations/sensor.mqtt/#configuration-variables
-export interface SensorConfig {
+export interface HASensorConfig {
   availabilityTopic?: string;
   device?: DeviceInfo;
   deviceClass?: SensorDeviceClass;
@@ -172,7 +174,7 @@ export interface SensorConfig {
   valueTemplate?: Template;
 }
 
-export function marshalSensorConfig(config: SensorConfig): string {
+export function marshalSensorConfig(config: HASensorConfig): string {
   const {
     availabilityTopic: availability_topic,
     device,
