@@ -14,6 +14,16 @@ export interface DeviceInfo {
   model?: string;
   name?: string;
   firmwareVersion?: string;
+  viaDevice?: string;
+}
+export interface HADeviceInfo {
+  connections?: [string, string | number][];
+  identifiers?: string[];
+  manufacturer?: string;
+  model?: string;
+  name?: string;
+  sw_version?: string;
+  via_device?: string;
 }
 
 // https://www.home-assistant.io/integrations/binary_sensor/#device-class
@@ -65,8 +75,29 @@ export interface BinarySensorConfig {
   valueTemplate?: Template;
 }
 
-export function marshalBinarySensorConfig(config: BinarySensorConfig): string {
+function formatDeviceInfo(device: DeviceInfo | undefined): HADeviceInfo | undefined {
+  if (!device) {
+    return undefined;
+  }
   const {
+    connections,
+    identifiers,
+    manufacturer,
+    model,
+    name,
+    firmwareVersion,
+  } = device;
+
+  return {
+    connections,
+    identifiers,
+    manufacturer,
+    model,
+    name,
+    sw_version: firmwareVersion,
+  };
+}
+
     availabilityTopic: availability_topic,
     device,
     deviceClass: device_class,
@@ -88,7 +119,7 @@ export function marshalBinarySensorConfig(config: BinarySensorConfig): string {
 
   return JSON.stringify({
     availability_topic,
-    device,
+    device: formatDeviceInfo(device),
     device_class: device_class === BinarySensorDeviceClass.None ? undefined : device_class,
     expire_after,
     force_update,
@@ -163,7 +194,7 @@ export function marshalSensorConfig(config: SensorConfig): string {
 
   return JSON.stringify({
     availability_topic,
-    device,
+    device: formatDeviceInfo(device),
     device_class: device_class === SensorDeviceClass.None ? undefined : device_class,
     expire_after,
     force_update,
