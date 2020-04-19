@@ -11,6 +11,7 @@ unannounced breaking changes regularly.
 
  - [myStrom WiFi Button](https://mystrom.ch/wifi-button/)
  - [myStrom WiFi Button Plus](https://mystrom.ch/wifi-button-plus/)
+ - [myStrom WiFi Switch](https://mystrom.ch/wifi-switch-ch/)
 
 ## Example Configuration
 
@@ -44,6 +45,18 @@ unannounced breaking changes regularly.
    wheel value. Higher number means fewer rotations to go from `wheelMin` to
    `wheelMax` and vice versa
 
+### myStrom Switch Plugin Options
+
+ - `mystrom-switch.mqttTopic`: MQTT topic prefix under which to publish switch
+   states
+ - `mystrom-switch.switches`: Configuration for each switch. Only switches
+   configured here will be handled.
+
+#### Switch Configuration
+
+ - `host`: Host or IP address of the switch.
+ - `name`: A friendly name for the switch
+
 ```json
 {
   "http": {
@@ -75,6 +88,19 @@ unannounced breaking changes regularly.
           "mac": "A3A4A5B1B2B3",
           "name": "Bathroom Wifi Button",
           "type": "button"
+        }
+      ]
+    },
+    "mystrom-switch": {
+      "mqttTopic": "myStrom/wifiSwitches",
+      "switches": [
+        {
+          "host": "10.13.37.42",
+          "name": "Wifi Switch 1"
+        },
+        {
+          "host": "10.13.37.43",
+          "name": "Wifi Switch 2"
         }
       ]
     }
