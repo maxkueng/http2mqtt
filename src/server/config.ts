@@ -27,6 +27,7 @@ interface HomeAssistantConfiguration {
 }
 
 export interface Configuration {
+  logLevel: string;
   dataDir: string;
   http: HttpConfiguration;
   mqtt: MqttConfiguration;
@@ -35,6 +36,7 @@ export interface Configuration {
 }
 
 const defaultConfig = {
+  logLevel: 'info',
   dataDir: './data',
   http: {
     host: '0.0.0.0',
@@ -60,6 +62,7 @@ const mqttSchema = Joi.object({
 const homeAssistantSchema = Joi.object({ discovery: Joi.boolean().truthy('yes').falsy('no').optional() });
 
 const configSchema = Joi.object({
+  logLevel: Joi.string().required().valid('error', 'warn', 'info', 'verbose', 'debug', 'silly'),
   dataDir: Joi.string().required(),
   http: httpSchema.required(),
   mqtt: mqttSchema.required(),

@@ -53,6 +53,7 @@ are, however, available as triggers in the automation editor UI.
 
 ## Configuration
 
+ - `logLevel`: _(optional; default: 'info')_ Log level. One of "error", "warn", "info", "verbose", "debug", "silly"
  - `http.host`: Interface IP for the HTTP server to listen on
  - `http.port`: Port for the HTTP server to listen on
  - `mqtt.broker`: MQTT Broker URL

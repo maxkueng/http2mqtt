@@ -14,11 +14,11 @@ interface ServerOptions {
 }
 
 export default class Server {
-  logging = new LogManager();
+  logging: LogManager;
 
   logger: Logger;
 
-  plugins = new PluginManager(this);
+  plugins: PluginManager;
 
   config: Configuration;
 
@@ -28,9 +28,11 @@ export default class Server {
 
   constructor({ config }: ServerOptions) {
     this.config = config;
+    this.logging = new LogManager(config.logLevel);
     this.logger = this.logging.getLogger('server');
     this.mqttClient = new MqttClient(config.mqtt);
     this.app = express();
+    this.plugins = new PluginManager(this);
 
     if (config.http.cors) {
       this.app.use(cors(typeof config.http.cors === 'object' ? config.http.cors : undefined));
