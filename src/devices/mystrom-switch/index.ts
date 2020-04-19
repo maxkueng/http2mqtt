@@ -72,7 +72,7 @@ export default {
   ): Promise<void> {
     const defaultOptions = {
       pollingInterval: 5000,
-      sensorUpdateInterval: 1 * 60000,
+      sensorUpdateInterval: 5 * 60000,
       mqttTopic: 'mystrom/wifi_switches',
     };
     const opts = validationHelpers.validate<MyStromSwitchPluginOptions>(
