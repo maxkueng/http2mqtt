@@ -25,6 +25,11 @@ export enum ButtonType {
   ButtonPlus = 'button-plus',
 }
 
+export enum BinarySensorState {
+  On = 'on',
+  Off = 'off',
+}
+
 export interface ButtonLightConfig {
   type: ButtonType.Button;
   mac: string;
@@ -44,7 +49,6 @@ export type ButtonConfig =
   | ButtonLightConfig
   | ButtonPlusConfig
   ;
-
 
 export interface MyStromButtonPluginOptions extends PluginOptions {
   mqttTopic: string;

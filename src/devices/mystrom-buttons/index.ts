@@ -16,6 +16,7 @@ import discovery from './discovery';
 import {
   ActionID,
   ButtonType,
+  BinarySensorState,
 } from './types';
 import type {
   ButtonConfig,
@@ -121,9 +122,15 @@ export default {
           retain: true,
           qos: 0,
         });
-        mqttClient.publish(getActionTopic(currentButton, actionID), 'ON');
+        mqttClient.publish(
+          getActionTopic(currentButton, actionID),
+          helpers.getBinarySensorStateValue(BinarySensorState.On),
+        );
         await sleep(1000);
-        mqttClient.publish(getActionTopic(currentButton, actionID), 'OFF');
+        mqttClient.publish(
+          getActionTopic(currentButton, actionID),
+          helpers.getBinarySensorStateValue(BinarySensorState.Off),
+        );
       }
     };
 

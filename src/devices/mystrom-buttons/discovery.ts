@@ -6,6 +6,7 @@ import * as helpers from './helpers';
 import {
   ActionID,
   ButtonType,
+  BinarySensorState,
 } from './types';
 import type {
   ButtonLightConfig,
@@ -81,8 +82,8 @@ export default function discovery(
       device: getDeviceInfo(button),
       stateTopic: `${options.mqttTopic}/${button.mac}/${actionName}`,
       valueTemplate: '{{ value | upper }}',
-      payloadOn: 'ON',
-      payloadOff: 'OFF',
+      payloadOn: helpers.getBinarySensorStateValue(BinarySensorState.On),
+      payloadOff: helpers.getBinarySensorStateValue(BinarySensorState.Off),
       offDelay: 1,
     };
   };

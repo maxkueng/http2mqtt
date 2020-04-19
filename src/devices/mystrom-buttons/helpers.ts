@@ -1,6 +1,7 @@
 import {
   ActionID,
   ActionName,
+  BinarySensorState,
 } from './types';
 
 export function getActionName(actionID: ActionID): ActionName {
@@ -21,5 +22,16 @@ export function getActionName(actionID: ActionID): ActionName {
       return ActionName.WheelFinal;
     default:
       throw new Error(`Invalid action id '${actionID}'`);
+  }
+}
+
+export function getBinarySensorStateValue(sensorState: BinarySensorState): string {
+  switch (sensorState) {
+    case BinarySensorState.On:
+      return 'on';
+    case BinarySensorState.Off:
+      return 'off';
+    default:
+      throw new Error(`Uknown sensor state '${sensorState}'`);
   }
 }
