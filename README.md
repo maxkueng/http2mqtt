@@ -15,7 +15,7 @@ unannounced breaking changes regularly.
 
 ## Home Assistant Discovery
 
-Note that _Device Triggers_ won't show up a entities under the device. They
+Note that _Device Triggers_ won't show up as entities under the device. They
 are, however, available as triggers in the automation editor UI.
 
 ### myStrom WiFi Button
@@ -51,7 +51,7 @@ are, however, available as triggers in the automation editor UI.
 [hasensor]: https://www.home-assistant.io/integrations/sensor.mqtt/
 [haswitch]: https://www.home-assistant.io/integrations/switch.mqtt/
 
-## Example Configuration
+## Configuration
 
  - `http.host`: Interface IP for the HTTP server to listen on
  - `http.port`: Port for the HTTP server to listen on
@@ -94,6 +94,8 @@ are, however, available as triggers in the automation editor UI.
 
  - `host`: Host or IP address of the switch.
  - `name`: A friendly name for the switch
+
+### Example
 
 ```json
 {
