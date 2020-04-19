@@ -13,6 +13,44 @@ unannounced breaking changes regularly.
  - [myStrom WiFi Button Plus](https://mystrom.ch/wifi-button-plus/)
  - [myStrom WiFi Switch](https://mystrom.ch/wifi-switch-ch/)
 
+## Home Assistant Discovery
+
+Note that _Device Triggers_ won't show up a entities under the device. They
+are, however, available as triggers in the automation editor UI.
+
+### myStrom WiFi Button
+
+| Name         | Device Type                       | Trigger Type          | Trigger Subtype | Value              | Units |
+| ------------ | --------------------------------- | --------------------- | --------------- | ------------------ | ----- |
+| Single Press | [Device Trigger][hadevicetrigger] | `button_short_press`  | `button_1`      |                    |       |
+| Double Press | [Device Trigger][hadevicetrigger] | `button_double_press` | `button_1`      |                    |       |
+| Long Press   | [Device Trigger][hadevicetrigger] | `button_long_press`   | `button_1`      |                    |       |
+| Battery      | [Sensor][hasensor]                |                       |                 | Battery percentage | `%`   |
+
+### myStrom WiFi Button Plus
+
+| Name         | Device Type                       | Trigger Type          | Trigger Subtype | Value                                    | Units |
+| ------------ | --------------------------------- | --------------------- | --------------- | ---------------------------------------- | ----- |
+| Single Press | [Device Trigger][hadevicetrigger] | `button_short_press`  | `button_1`      |                                          |       |
+| Double Press | [Device Trigger][hadevicetrigger] | `button_double_press` | `button_1`      |                                          |       |
+| Long Press   | [Device Trigger][hadevicetrigger] | `button_long_press`   | `button_1`      |                                          |       |
+| Touch        | [Device Trigger][hadevicetrigger] | `button_short_press`  | `button_2`      |                                          |       |
+| Wheel        | [Sensor][hasensor]                |                       |                 | Number between `wheelMin` and `wheelMax` |       |
+| Wheel Final  | [Device Trigger][hadevicetrigger] | `button_short_press`  | `button_3`      |                                          |       |
+| Battery      | [Sensor][hasensor]                |                       |                 | Percentage                               | `%`   |
+
+### myStrom WiFi Switch
+
+| Name        | Device Type        | Value       | Units |
+| ----------- | ------------------ | ----------- | ----- |
+| Relay       | [Switch][haswitch] |             |       |
+| Power       | [Sensor][hasensor] | Power usage | `W`   |
+| Temperature | [Sensor][hasensor] | Temperature | `°C`  |
+
+[hadevicetrigger]: https://www.home-assistant.io/integrations/device_trigger.mqtt/
+[hasensor]: https://www.home-assistant.io/integrations/sensor.mqtt/
+[haswitch]: https://www.home-assistant.io/integrations/switch.mqtt/
+
 ## Example Configuration
 
  - `http.host`: Interface IP for the HTTP server to listen on
