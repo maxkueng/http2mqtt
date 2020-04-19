@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import Joi from '@hapi/joi';
 import * as validationHelpers from 'helpers/validation';
+import Logger from 'server/logger';
 import type { CorsOptions } from 'cors';
 import type { PluginOptions } from 'server/plugin-manager';
 
@@ -67,11 +68,12 @@ const configSchema = Joi.object({
 });
 
 export function getConfig(configPath: string): Configuration {
-  console.log(`Config path: ${configPath}`);
+  const logger = new Logger().getLogger('config');
+  logger.info(`Config oath ${configPath}`);
   const resolvedPath = path.resolve(configPath);
   const fileContents = fs.readFileSync(resolvedPath, 'utf-8');
   const configFile = JSON.parse(fileContents);
-  console.log(JSON.stringify(configFile, null, '  '));
+  logger.debug('Config', JSON.stringify(configFile, null, '  '));
 
   const config = {
     ...defaultConfig,

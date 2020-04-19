@@ -5,15 +5,29 @@ import {
   format,
 } from 'winston';
 
+
 export default class LogManager {
   logger: Logger;
 
   loggers: Map<string, Logger> = new Map();
 
   constructor() {
+    const myFormat = format.printf(({
+      level,
+      message,
+      module,
+      timestamp,
+      ...rest
+    }) => (
+      `${timestamp} ${level} [${module}]: ${message} ${JSON.stringify(rest, null, '  ')}`
+    ));
     this.logger = createLogger({
       level: 'debug',
-      format: format.combine(format.colorize(), format.prettyPrint()),
+      format: format.combine(
+        format.colorize(),
+        format.timestamp(),
+        myFormat,
+      ),
       transports: [new transports.Console()],
     });
   }

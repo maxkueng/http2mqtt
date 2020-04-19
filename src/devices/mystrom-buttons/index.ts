@@ -176,8 +176,21 @@ export default {
         const currentButton = buttons.find((button: ButtonConfig) => button.mac === mac);
         if (!currentButton) {
           res.status(401).send('Unauthorized');
+          logger.warn('Received request from unknown MAC', {
+            mac,
+            action,
+            wheel,
+            battery,
+          });
           return;
         }
+
+        logger.debug('Received request', {
+          mac,
+          action,
+          wheel,
+          battery,
+        });
 
         switch (action) {
           case ActionID.Wheel:
@@ -193,7 +206,7 @@ export default {
 
     registerApp(app, route);
 
-    logger.info('Initialize', opts);
+    logger.info('Initialized', opts);
 
     if (config.homeAssistant && config.homeAssistant.discovery) {
       const discover = discovery(plugin, opts);
