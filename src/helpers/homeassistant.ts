@@ -4,6 +4,7 @@ export enum ComponentType {
   Sensor = 'sensor',
   BinarySensor = 'binary_sensor',
   Switch = 'switch',
+  DeviceTrigger = 'device_automation',
 }
 
 export type Template = string;
@@ -280,6 +281,62 @@ export function marshalSwitchConfig(config: HASwitchConfig): string {
     state_topic,
     unique_id,
     value_template,
+  }, null, '  ');
+}
+
+export enum DeviceTriggerType {
+  ButtonShortPress = 'button_short_press',
+  ButtonShortRelease = 'button_short_release',
+  ButtonLongPress = 'button_long_press',
+  ButtonLongRelease = 'button_long_release',
+  ButtonDoublePress = 'button_double_press',
+  ButtonTriplePress = 'button_triple_press',
+  ButtonQuadruplePress = 'button_quadruple_press',
+  ButtonQuintuplePress = 'button_quintuple_press',
+}
+
+export enum DeviceTriggerSubtype {
+  TurnOn = 'turn_on',
+  TurnOff = 'turn_off',
+  Button1 = 'button_1',
+  Button2 = 'button_2',
+  Button3 = 'button_3',
+  Button4 = 'button_4',
+  Button5 = 'button_5',
+  Button6 = 'button_6',
+}
+
+// https://www.home-assistant.io/integrations/device_trigger.mqtt/
+export interface HADeviceTriggerConfig {
+  payload?: string;
+  qos?: number;
+  topic: string;
+  type: DeviceTriggerType;
+  subtype: DeviceTriggerSubtype;
+  device: DeviceInfo;
+  uniqueID?: string;
+}
+
+export function marshalDeviceTriggerConfig(config: HADeviceTriggerConfig): string {
+  const {
+    payload,
+    qos,
+    topic,
+    type,
+    subtype,
+    device,
+    uniqueID: unique_id,
+  } = config;
+
+  return JSON.stringify({
+    automation_type: 'trigger',
+    payload,
+    qos,
+    topic,
+    type,
+    subtype,
+    device: formatDeviceInfo(device),
+    unique_id,
   }, null, '  ');
 }
 

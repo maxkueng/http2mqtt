@@ -42,7 +42,7 @@ function getActionComponentType(actionID: ActionID): homeAssistantHelpers.Compon
     case ActionID.Long:
     case ActionID.Touch:
     case ActionID.WheelFinal:
-      return homeAssistantHelpers.ComponentType.BinarySensor;
+      return homeAssistantHelpers.ComponentType.DeviceTrigger;
     case ActionID.Wheel:
     case ActionID.Battery:
       return homeAssistantHelpers.ComponentType.Sensor;
@@ -71,20 +71,58 @@ export default function discovery(
 ): Discovery {
   const { mqttClient } = plugin;
 
-  const getBinarySensorConfig = (
+  function getDeviceTriggerType(actionID: ActionID): homeAssistantHelpers.DeviceTriggerType {
+    switch (actionID) {
+      case ActionID.Single:
+        return homeAssistantHelpers.DeviceTriggerType.ButtonShortPress;
+      case ActionID.Double:
+        return homeAssistantHelpers.DeviceTriggerType.ButtonDoublePress;
+      case ActionID.Long:
+        return homeAssistantHelpers.DeviceTriggerType.ButtonLongPress;
+      case ActionID.Touch:
+        return homeAssistantHelpers.DeviceTriggerType.ButtonShortPress;
+      case ActionID.WheelFinal:
+        return homeAssistantHelpers.DeviceTriggerType.ButtonShortPress;
+      default:
+        throw new Error(`Invalid action id '${actionID}'`);
+    }
+  }
+
+  function getDeviceTriggerSubtype(actionID: ActionID): homeAssistantHelpers.DeviceTriggerSubtype {
+    switch (actionID) {
+      case ActionID.Single:
+        return homeAssistantHelpers.DeviceTriggerSubtype.Button1;
+      case ActionID.Double:
+        return homeAssistantHelpers.DeviceTriggerSubtype.Button1;
+      case ActionID.Long:
+        return homeAssistantHelpers.DeviceTriggerSubtype.Button1;
+      case ActionID.Touch:
+        return homeAssistantHelpers.DeviceTriggerSubtype.Button2;
+      case ActionID.WheelFinal:
+        return homeAssistantHelpers.DeviceTriggerSubtype.Button3;
+      default:
+        throw new Error(`Invalid action id '${actionID}'`);
+    }
+  }
+
+  const getDeviceUniqueID = (
     button: ButtonConfig,
     actionID: ActionID,
-  ): homeAssistantHelpers.HABinarySensorConfig => {
+  ): string => (
+    `${button.mac}_${helpers.getActionName(actionID)}`
+  );
+
+  const getDeviceTriggerConfig = (
+    button: ButtonConfig,
+    actionID: ActionID,
+  ): homeAssistantHelpers.HADeviceTriggerConfig => {
     const actionName = helpers.getActionName(actionID);
     return {
-      name: `${button.name} ${actionName}`,
-      uniqueID: `${button.mac}_${actionName}`,
+      payload: helpers.getBinarySensorStateValue(BinarySensorState.On),
+      topic: `${options.mqttTopic}/${button.mac}/${actionName}`,
+      type: getDeviceTriggerType(actionID),
+      subtype: getDeviceTriggerSubtype(actionID),
       device: getDeviceInfo(button),
-      stateTopic: `${options.mqttTopic}/${button.mac}/${actionName}`,
-      valueTemplate: '{{ value | upper }}',
-      payloadOn: helpers.getBinarySensorStateValue(BinarySensorState.On),
-      payloadOff: helpers.getBinarySensorStateValue(BinarySensorState.Off),
-      offDelay: 1,
     };
   };
 
@@ -95,20 +133,21 @@ export default function discovery(
     const actionName = helpers.getActionName(actionID);
     return {
       name: `${button.name} ${actionName}`,
-      uniqueID: `${button.mac}_${actionName}`,
+      uniqueID: getDeviceUniqueID(button, actionID),
       device: getDeviceInfo(button),
       stateTopic: `${options.mqttTopic}/${button.mac}/${actionName}`,
       unitOfMeasurement: getSensorUnitOfMeasurement(actionID),
     };
   };
 
-  async function publishBinarySensorDiscovery(button: ButtonConfig, actionID: ActionID): Promise<void> {
-    const binarySensorConfig = getBinarySensorConfig(button, actionID);
-    const discoveryConfig = homeAssistantHelpers.marshalBinarySensorConfig(binarySensorConfig);
+  async function publishDeviceTriggerDiscovery(button: ButtonConfig, actionID: ActionID): Promise<void> {
+    const uniqueID = getDeviceUniqueID(button, actionID);
+    const deviceTriggerConfig = getDeviceTriggerConfig(button, actionID);
+    const discoveryConfig = homeAssistantHelpers.marshalDeviceTriggerConfig(deviceTriggerConfig);
     const discoveryTopic = homeAssistantHelpers.getDiscoveryTopic(
       getActionComponentType(actionID),
       'myStrom',
-      binarySensorConfig.uniqueID || button.mac,
+      uniqueID || button.mac,
     );
     await mqttClient.publish(discoveryTopic, discoveryConfig, { retain: true });
   }
@@ -135,7 +174,7 @@ export default function discovery(
         case ActionID.Single:
         case ActionID.Double:
         case ActionID.Long:
-          return publishBinarySensorDiscovery(button, actionID);
+          return publishDeviceTriggerDiscovery(button, actionID);
         case ActionID.Battery:
           return publishSensorDiscovery(button, actionID);
         default:
@@ -160,7 +199,7 @@ export default function discovery(
         case ActionID.Long:
         case ActionID.Touch:
         case ActionID.WheelFinal:
-          return publishBinarySensorDiscovery(button, actionID);
+          return publishDeviceTriggerDiscovery(button, actionID);
         case ActionID.Battery:
         case ActionID.Wheel:
           return publishSensorDiscovery(button, actionID);
