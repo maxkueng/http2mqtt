@@ -120,7 +120,6 @@ are, however, available as triggers in the automation editor UI.
   "options": {
     "mystrom-buttons": {
       "route": "/mystrom/generic",
-      "mqttTopic": "myStrom/wifiButtons",
       "buttons": [
         {
           "mac": "ABCDEDA1B2C3",
@@ -138,14 +137,13 @@ are, however, available as triggers in the automation editor UI.
       ]
     },
     "mystrom-switch": {
-      "mqttTopic": "myStrom/wifiSwitches",
       "switches": [
         {
-          "host": "10.13.37.42",
+          "host": "10.13.37.43",
           "name": "Wifi Switch 1"
         },
         {
-          "host": "10.13.37.43",
+          "host": "10.13.37.44",
           "name": "Wifi Switch 2"
         }
       ]
