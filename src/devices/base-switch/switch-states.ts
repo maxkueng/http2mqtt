@@ -1,6 +1,6 @@
 import {
-  Availability,
   RelayState,
+  Availability,
 } from './types';
 
 interface SwitchState {

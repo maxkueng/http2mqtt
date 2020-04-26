@@ -1,13 +1,37 @@
 import axios from 'axios';
 import type { AxiosRequestConfig } from 'axios';
-import {
-  SensorType,
-  RelayState,
-} from './types';
-import type {
-  SwitchInfo,
-  SwitchReport,
-} from './types';
+
+export enum RelayState {
+  Off = '0',
+  On = '1',
+}
+
+export enum SensorType {
+  Power = 'power',
+  Temperature = 'temperature',
+  Relay = 'relay',
+  RelayCommand = 'relay_command',
+  Availability = 'availability',
+}
+
+export enum Availability {
+  Online = 'online',
+  Offline = 'offline',
+}
+
+export interface SwitchInfo {
+  mac: string;
+  ip: string;
+  version: string;
+  type: string;
+  name: string;
+}
+
+export interface SwitchReport {
+  [SensorType.Relay]: RelayState;
+  [SensorType.Power]: number;
+  [SensorType.Temperature]: number;
+}
 
 const defaultRequestOptions: AxiosRequestConfig = { responseType: 'json' };
 

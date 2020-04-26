@@ -4,38 +4,42 @@ import type { DeviceInfo } from 'helpers/homeassistant';
 import type { PluginInterface } from 'server/plugin-manager';
 import * as helpers from './helpers';
 import {
-  SensorType,
   RelayState,
+  Availability,
+  SensorType,
 } from './types';
 import type {
-  MyStromSwitchPluginOptions,
+  BaseSwitchOptions,
   SwitchDetails,
 } from './types';
 
-function getSensorUnitOfMeasurement(type: SensorType): string {
-  switch (type) {
+function getSensorUnitOfMeasurement(sensorType: SensorType): string {
+  switch (sensorType) {
     case SensorType.Power:
       return 'W';
+    case SensorType.Amperage:
+      return 'A';
     case SensorType.Temperature:
       return '°C';
     default:
-      throw new Error(`Unknown sensor type '${type}'`);
+      throw new Error(`Unknown sensor type '${sensorType}'`);
   }
 }
 
-function getSensorDeviceClass(type: SensorType): homeAssistantHelpers.SensorDeviceClass {
-  switch (type) {
+function getSensorDeviceClass(sensorType: SensorType): homeAssistantHelpers.SensorDeviceClass {
+  switch (sensorType) {
     case SensorType.Power:
       return homeAssistantHelpers.SensorDeviceClass.Power;
     case SensorType.Temperature:
       return homeAssistantHelpers.SensorDeviceClass.Temperature;
+    case SensorType.Amperage:
     default:
       return homeAssistantHelpers.SensorDeviceClass.None;
   }
 }
 
 interface Discovery {
-  announceSwitch: (details: SwitchDetails) => Promise<void>;
+  announceSwitch: (details: SwitchDetails, sensorTypes: SensorType[]) => Promise<void>;
 }
 
 const getDeviceInfo = (details: SwitchDetails): DeviceInfo => ({
@@ -44,16 +48,17 @@ const getDeviceInfo = (details: SwitchDetails): DeviceInfo => ({
     ['mac', formattingHelpers.formatMacAddress(details.mac)],
   ],
   model: details.deviceName,
-  name: `${details.name}`,
-  manufacturer: 'myStrom AG',
+  name: details.name,
+  manufacturer: details.deviceManufacturer,
   firmwareVersion: details.firmwareVersion,
 });
 
 export default function discovery(
   plugin: PluginInterface,
-  options: MyStromSwitchPluginOptions,
+  options: BaseSwitchOptions,
 ): Discovery {
   const { mqttClient } = plugin;
+  const { discoveryMQTTNodeID } = options;
 
   const getSensorConfig = (
     details: SwitchDetails,
@@ -63,7 +68,7 @@ export default function discovery(
     const availabilitySensorKey = helpers.getSensorKey(SensorType.Availability);
 
     return {
-      name: `${details.name} ${sensorKey}`,
+      name: `${details.name} ${helpers.getSensorFriendlyName(sensorType)}`,
       uniqueID: `${details.mac}_${sensorKey}`,
       deviceClass: getSensorDeviceClass(sensorType),
       device: getDeviceInfo(details),
@@ -71,6 +76,8 @@ export default function discovery(
       stateTopic: `${options.mqttTopic}/${details.mac}/${sensorKey}`,
       unitOfMeasurement: getSensorUnitOfMeasurement(sensorType),
       forceUpdate: true,
+      payloadAvailable: helpers.getAvailabilityValue(Availability.Online),
+      payloadUnavailable: helpers.getAvailabilityValue(Availability.Offline),
     };
   };
 
@@ -83,12 +90,14 @@ export default function discovery(
     const availabilitySensorKey = helpers.getSensorKey(SensorType.Availability);
 
     return {
-      name: `${details.name} ${sensorKey}`,
+      name: `${details.name} ${helpers.getSensorFriendlyName(sensorType)}`,
       uniqueID: `${details.mac}_${sensorKey}`,
       device: getDeviceInfo(details),
       commandTopic: `${options.mqttTopic}/${details.mac}/${relayCommandSensorKey}`,
       availabilityTopic: `${options.mqttTopic}/${details.mac}/${availabilitySensorKey}`,
       stateTopic: `${options.mqttTopic}/${details.mac}/${sensorKey}`,
+      payloadAvailable: helpers.getAvailabilityValue(Availability.Online),
+      payloadUnavailable: helpers.getAvailabilityValue(Availability.Offline),
       payloadOff: helpers.getRelayStateValue(RelayState.Off),
       payloadOn: helpers.getRelayStateValue(RelayState.On),
       stateOff: helpers.getRelayStateValue(RelayState.Off),
@@ -101,7 +110,7 @@ export default function discovery(
     const discoveryConfig = homeAssistantHelpers.marshalSensorConfig(sensorConfig);
     const discoveryTopic = homeAssistantHelpers.getDiscoveryTopic(
       homeAssistantHelpers.ComponentType.Sensor,
-      'myStrom',
+      discoveryMQTTNodeID,
       sensorConfig.uniqueID || details.mac,
     );
     await mqttClient.publish(discoveryTopic, discoveryConfig, { retain: true });
@@ -112,20 +121,17 @@ export default function discovery(
     const discoveryConfig = homeAssistantHelpers.marshalSwitchConfig(switchConfig);
     const discoveryTopic = homeAssistantHelpers.getDiscoveryTopic(
       homeAssistantHelpers.ComponentType.Switch,
-      'myStrom',
+      discoveryMQTTNodeID,
       switchConfig.uniqueID || details.mac,
     );
     await mqttClient.publish(discoveryTopic, discoveryConfig, { retain: true });
   }
 
-  async function announceSwitch(details: SwitchDetails): Promise<void> {
-    await Promise.all([
-      SensorType.Relay,
-      SensorType.Power,
-      SensorType.Temperature,
-    ].map((sensorType: SensorType) => {
+  async function announceSwitch(details: SwitchDetails, sensorTypes: SensorType[]): Promise<void> {
+    await Promise.all(sensorTypes.map((sensorType: SensorType) => {
       switch (sensorType) {
         case SensorType.Power:
+        case SensorType.Amperage:
         case SensorType.Temperature:
           return publishSensorDiscovery(details, sensorType);
         case SensorType.Relay:
