@@ -119,7 +119,7 @@ are, however, available as triggers in the automation editor UI.
  - `host` _(required)_: Host or IP address of the switch.
  - `name` _(required)_: A friendly name for the switch.
 
-### Edimap Plug Plugin Options
+### Edimax Plug Plugin Options
 
  - `edimax-plug.mqttTopic` _(optional; default: 'http2mqtt/edimax/wifi_plugs'):
    MQTT topic prefix undwe which to publish switch states._
