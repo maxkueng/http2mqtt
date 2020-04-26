@@ -132,7 +132,7 @@ export default function discovery(
   ): homeAssistantHelpers.HASensorConfig => {
     const actionName = helpers.getActionName(actionID);
     return {
-      name: `${button.name} ${actionName}`,
+      name: `${button.name} ${helpers.getActionFriendlyName(actionID)}`,
       uniqueID: getDeviceUniqueID(button, actionID),
       device: getDeviceInfo(button),
       stateTopic: `${options.mqttTopic}/${button.mac}/${actionName}`,

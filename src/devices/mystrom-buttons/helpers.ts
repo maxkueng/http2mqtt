@@ -25,6 +25,27 @@ export function getActionName(actionID: ActionID): ActionName {
   }
 }
 
+export function getActionFriendlyName(actionID: ActionID): string {
+  switch (actionID) {
+    case ActionID.Single:
+      return 'Single';
+    case ActionID.Double:
+      return 'Double';
+    case ActionID.Long:
+      return 'Long';
+    case ActionID.Touch:
+      return 'Touch';
+    case ActionID.Wheel:
+      return 'Wheel';
+    case ActionID.Battery:
+      return 'Battery Level';
+    case ActionID.WheelFinal:
+      return 'Wheel Final';
+    default:
+      throw new Error(`Invalid action id '${actionID}'`);
+  }
+}
+
 export function getBinarySensorStateValue(sensorState: BinarySensorState): string {
   switch (sensorState) {
     case BinarySensorState.On:
