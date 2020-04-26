@@ -12,6 +12,16 @@ unannounced breaking changes regularly.
  - [myStrom WiFi Button](https://mystrom.ch/wifi-button/)
  - [myStrom WiFi Button Plus](https://mystrom.ch/wifi-button-plus/)
  - [myStrom WiFi Switch](https://mystrom.ch/wifi-switch-ch/)
+ - [Edimax Smart Plug SP-2101W V2](https://www.edimax.com/edimax/merchandise/merchandise_detail/data/edimax/uk/home_automation_smart_plug/sp-2101w_v2/)
+ - [Edimax Smart Plug SP-1101W V2](https://www.edimax.com/edimax/merchandise/merchandise_detail/data/edimax/uk/home_automation_smart_plug/sp-1101w_v2/) _(untested)_
+ - [Edimax Smart Plug SP-2101W](https://www.edimax.com/edimax/merchandise/merchandise_detail/data/edimax/uk/home_automation_smart_plug/sp-2101w/) _(untested)_
+ - [Edimax Smart Plug SP-1101W](https://www.edimax.com/edimax/merchandise/merchandise_detail/data/edimax/uk/home_automation_smart_plug/sp-1101w/) _(untested)_
+
+_NOTE: If your Edimax plug uses recent firmware (v3) and you don't know your
+plug's password, please refer to [this guide][ediplug-troubleshoot] on how to
+factory-reset your plug and obtain its auto-generated password during setup._
+
+[ediplug-troubleshoot]: https://github.com/maxkueng/ediplug#troubleshooting
 
 ## Home Assistant Discovery
 
@@ -46,6 +56,14 @@ are, however, available as triggers in the automation editor UI.
 | Relay       | [Switch][haswitch] |             |       |
 | Power       | [Sensor][hasensor] | Power usage | `W`   |
 | Temperature | [Sensor][hasensor] | Temperature | `°C`  |
+
+### Edimax Smart Plug
+
+| Name        | Device Type        | Value                    | Units |
+| ----------- | ------------------ | ------------------------ | ----- |
+| Relay       | [Switch][haswitch] |                          |       |
+| Power       | [Sensor][hasensor] | Power usage              | `W`   |
+| Amperage    | [Sensor][hasensor] | Power current / amperage | `A`   |
 
 [hadevicetrigger]: https://www.home-assistant.io/integrations/device_trigger.mqtt/
 [hasensor]: https://www.home-assistant.io/integrations/sensor.mqtt/
@@ -101,6 +119,20 @@ are, however, available as triggers in the automation editor UI.
  - `host` _(required)_: Host or IP address of the switch.
  - `name` _(required)_: A friendly name for the switch.
 
+### Edimap Plug Plugin Options
+
+ - `edimax-plug.mqttTopic` _(optional; default: 'http2mqtt/edimax/wifi_plugs'):
+   MQTT topic prefix undwe which to publish switch states._
+ - `edimax-plug.switches` _(required)_: Configuration for each switch. Only
+   switches configured here will be handled.
+
+#### Switch Configuration
+
+ - `host` _(required)_: Host or IP address of the switch.
+ - `name` _(required)_: A friendly name for the switch.
+ - `username` _(optional; default: 'admin')_: Username to log in to the switch.
+ - `password` _(required)_: Password to log in to the switch.
+
 ### Example
 
 ```json
@@ -145,6 +177,16 @@ are, however, available as triggers in the automation editor UI.
         {
           "host": "10.13.37.44",
           "name": "Wifi Switch 2"
+        }
+      ]
+    },
+    "edimax-plug": {
+      "switches": [
+        {
+          "name": "Edimax Switch 1",
+          "host": "10.13.37.45",
+          "username": "admin",
+          "password": "1234"
         }
       ]
     }
