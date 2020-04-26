@@ -25,7 +25,7 @@ are, however, available as triggers in the automation editor UI.
 | Single Press | [Device Trigger][hadevicetrigger] | `button_short_press`  | `button_1`      |                    |       |
 | Double Press | [Device Trigger][hadevicetrigger] | `button_double_press` | `button_1`      |                    |       |
 | Long Press   | [Device Trigger][hadevicetrigger] | `button_long_press`   | `button_1`      |                    |       |
-| Battery      | [Sensor][hasensor]                |                       |                 | Battery percentage | `%`   |
+| Battery      | [Sensor][hasensor]                |                       |                 | Battery level      | `%`   |
 
 ### myStrom WiFi Button Plus
 
@@ -37,7 +37,7 @@ are, however, available as triggers in the automation editor UI.
 | Touch        | [Device Trigger][hadevicetrigger] | `button_short_press`  | `button_2`      |                                          |       |
 | Wheel        | [Sensor][hasensor]                |                       |                 | Number between `wheelMin` and `wheelMax` |       |
 | Wheel Final  | [Device Trigger][hadevicetrigger] | `button_short_press`  | `button_3`      |                                          |       |
-| Battery      | [Sensor][hasensor]                |                       |                 | Percentage                               | `%`   |
+| Battery      | [Sensor][hasensor]                |                       |                 | Percentage level                         | `%`   |
 
 ### myStrom WiFi Switch
 
@@ -53,48 +53,53 @@ are, however, available as triggers in the automation editor UI.
 
 ## Configuration
 
- - `logLevel`: _(optional; default: 'info')_ Log level. One of "error", "warn", "info", "verbose", "debug", "silly"
- - `http.host`: Interface IP for the HTTP server to listen on
- - `http.port`: Port for the HTTP server to listen on
- - `mqtt.broker`: MQTT Broker URL
- - `mqtt.username` _(optional)_: MQTT broker username
- - `mqtt.password` _(optional)_: MQTT broker password
- - `mqtt.homeAssistant.discovery` _(optional)_: Enable publishing discovery
-   information for Home Assistant 
+ - `logLevel`: _(optional; default: 'info')_ Log level. One of "error", "warn",
+   "info", "verbose", "debug", "silly".
+ - `http.host` _(optional; default: '0.0.0.0')_: Interface IP for the HTTP
+   server to listen on.
+ - `http.port` _(optional; default: 8321)_: Port for the HTTP server to listen
+   on.
+ - `mqtt.broker` _(required)_: MQTT Broker URL.
+ - `mqtt.username` _(optional)_: MQTT broker username.
+ - `mqtt.password` _(optional)_: MQTT broker password.
+ - `mqtt.homeAssistant.discovery` _(optional; default: false)_: Enable
+   publishing discovery information for Home Assistant.
  - `options.PLUGIN_NAME` _(optional): Plugin-specific options_
 
 ### myStrom Buttons Plugin Options
 
- - `mystrom-buttons.route`: Route path under which to handle actions from the
-   buttons
- - `mystrom-buttons.mqttTopic`: MQTT topic prefix under which to publish button
-   states
- - `mystrom-buttons.buttons`: Configuration for each button. Only buttons
-   configured here will be handled.  
+ - `mystrom-buttons.route` _(optional; default: `"/mystrom-buttons"`)_: Route
+   path under which to handle actions from the buttons
+ - `mystrom-buttons.mqttTopic` _(optional; default:
+   'http2mqtt/mystrom/wifi_buttons')_: MQTT topic prefix under which to
+   publish button states
+ - `mystrom-buttons.buttons` _(required)_: Configuration for each button. Only
+   buttons configured here will be handled.  
 
 #### Button Configuration
 
- - `mac`: MAC address of the button
- - `name`: A friendly name for the button
- - `type`: Either `"button"` or `"button-plus"` for myStrom Wifi button or
-   myStrom Wifi Button Plus respectively
- - `wheelMin` _(button-plus only)_: Minimum value for the wheel
- - `wheelMax` _(button-plus only)_: Maximum value for the wheel 
+ - `mac` _(required)_: MAC address of the button
+ - `name` _(required)_: A friendly name for the button
+ - `type` _(required)_: Either `"button"` or `"button-plus"` for myStrom Wifi
+   button or myStrom Wifi Button Plus respectively
+ - `wheelMin` _(button-plus only; required)_: Minimum value for the wheel
+ - `wheelMax` _(button-plus only; required)_: Maximum value for the wheel 
  - `wheelSpeed` _(button-plus only; optional; default: 1)_: Multiplier for the
    wheel value. Higher number means fewer rotations to go from `wheelMin` to
    `wheelMax` and vice versa
 
 ### myStrom Switch Plugin Options
 
- - `mystrom-switch.mqttTopic`: MQTT topic prefix under which to publish switch
-   states
- - `mystrom-switch.switches`: Configuration for each switch. Only switches
-   configured here will be handled.
+ - `mystrom-switch.mqttTopic` _(optional; default:
+   'http2mqtt/mystrom/wifi_switches')_: MQTT topic prefix under which to
+   publish switch states
+ - `mystrom-switch.switches` _(required)_: Configuration for each switch. Only
+   switches configured here will be handled.
 
 #### Switch Configuration
 
- - `host`: Host or IP address of the switch.
- - `name`: A friendly name for the switch
+ - `host` _(required)_: Host or IP address of the switch.
+ - `name` _(required)_: A friendly name for the switch.
 
 ### Example
 
