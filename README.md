@@ -154,7 +154,7 @@ are, however, available as triggers in the automation editor UI.
       "route": "/mystrom/generic",
       "buttons": [
         {
-          "mac": "ABCDEDA1B2C3",
+          "mac": "BADA55FA7A55",
           "name": "Kitchen Wifi Button Plus",
           "type": "button-plus",
           "wheelMin": 0,
@@ -162,7 +162,7 @@ are, however, available as triggers in the automation editor UI.
           "wheelSpeed": 2.5
         },
         {
-          "mac": "A3A4A5B1B2B3",
+          "mac": "FA7A55BADA55",
           "name": "Bathroom Wifi Button",
           "type": "button"
         }
