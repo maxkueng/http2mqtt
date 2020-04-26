@@ -146,7 +146,7 @@ export default function discovery(
     const discoveryConfig = homeAssistantHelpers.marshalDeviceTriggerConfig(deviceTriggerConfig);
     const discoveryTopic = homeAssistantHelpers.getDiscoveryTopic(
       getActionComponentType(actionID),
-      'myStrom',
+      'mystrom',
       uniqueID || button.mac,
     );
     await mqttClient.publish(discoveryTopic, discoveryConfig, { retain: true });
@@ -157,7 +157,7 @@ export default function discovery(
     const discoveryConfig = homeAssistantHelpers.marshalSensorConfig(sensorConfig);
     const discoveryTopic = homeAssistantHelpers.getDiscoveryTopic(
       getActionComponentType(actionID),
-      'myStrom',
+      'mystrom',
       sensorConfig.uniqueID || button.mac,
     );
     await mqttClient.publish(discoveryTopic, discoveryConfig, { retain: true });

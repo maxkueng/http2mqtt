@@ -74,7 +74,7 @@ export default {
     plugin: PluginInterface,
     options: PluginOptions = {},
   ): Promise<void> {
-    const defaultOptions = { mqttTopic: 'mystrom/wifi_buttons' };
+    const defaultOptions = { mqttTopic: 'http2mqtt/mystrom/wifi_buttons' };
     const opts = validationHelpers.validate<MyStromButtonPluginOptions>(
       optionsSchema,
       {
