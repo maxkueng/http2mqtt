@@ -1,7 +1,11 @@
+/* eslint-disable no-console */
+
 import * as yargs from 'yargs';
 import Server from 'server/server';
 import { getConfig } from 'server/config';
 import devices from 'devices';
+
+console.log(`Commit: ${__COMMIT_HASH__}`);
 
 const args = yargs.options({
   config: {

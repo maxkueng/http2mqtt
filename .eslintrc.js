@@ -4,6 +4,9 @@ module.exports = {
     project: './tsconfig.json',
     sourceType: 'module',
   },
+  globals: {
+    __COMMIT_HASH__: true,
+  },
   plugins: [
     '@typescript-eslint',
   ],

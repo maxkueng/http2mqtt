@@ -1,5 +1,8 @@
 const path = require('path');
+const webpack = require('webpack');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const GitRevisionPlugin = require('git-revision-webpack-plugin');
+const gitRevisionPlugin = new GitRevisionPlugin();
 
 module.exports = [
   {
@@ -42,6 +45,10 @@ module.exports = [
     },
     plugins: [
       //new ForkTsCheckerWebpackPlugin(),
+      gitRevisionPlugin,
+      new webpack.DefinePlugin({
+        '__COMMIT_HASH__': JSON.stringify(gitRevisionPlugin.commithash()),
+      }),
     ],
   },
 ];
