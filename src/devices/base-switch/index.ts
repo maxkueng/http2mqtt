@@ -100,6 +100,12 @@ export async function initialize(
       throw new Error('Unexpected code reached');
     }
 
+    mqttClient.publish(
+      getSensorTopic(details, SensorType.Availability),
+      helpers.getAvailabilityValue(Availability.Online),
+      { retain: true },
+    );
+
     const clientSensorTypes = client.getSensorTypes(switchID);
 
     numericSensorTypes.forEach((sensorType) => {
@@ -186,6 +192,7 @@ export async function initialize(
         mqttClient.publish(
           getSensorTopic(details, SensorType.Availability),
           helpers.getAvailabilityValue(Availability.Online),
+          { retain: true },
         );
       }
 
@@ -206,6 +213,7 @@ export async function initialize(
         mqttClient.publish(
           getSensorTopic(details, SensorType.Availability),
           helpers.getAvailabilityValue(Availability.Offline),
+          { retain: true },
         );
       }
 
@@ -299,6 +307,12 @@ export async function initialize(
         const clientSensorTypes = client.getSensorTypes(switchID);
         discover.announceSwitch(details, clientSensorTypes);
       }
+
+      mqttClient.publish(
+        getSensorTopic(details, SensorType.Availability),
+        helpers.getAvailabilityValue(Availability.Online),
+        { retain: true },
+      );
     } catch (err) {
       logger.error(`Switch '${switchID}' unreachable`);
     }
