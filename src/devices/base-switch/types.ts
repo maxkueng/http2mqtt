@@ -66,6 +66,6 @@ export interface BaseSwitchOptions extends PluginOptions {
   pollingInterval: number;
   sensorUpdateInterval: number;
   mqttTopic: string;
+  discoveryMQTTNodeID: string;
   client: SwitchClient;
-  // switches: SwitchConfig[];
 }
