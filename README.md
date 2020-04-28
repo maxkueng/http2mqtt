@@ -16,6 +16,8 @@ unannounced breaking changes regularly.
  - [Edimax Smart Plug SP-1101W V2](https://www.edimax.com/edimax/merchandise/merchandise_detail/data/edimax/uk/home_automation_smart_plug/sp-1101w_v2/) _(untested)_
  - [Edimax Smart Plug SP-2101W](https://www.edimax.com/edimax/merchandise/merchandise_detail/data/edimax/uk/home_automation_smart_plug/sp-2101w/) _(untested)_
  - [Edimax Smart Plug SP-1101W](https://www.edimax.com/edimax/merchandise/merchandise_detail/data/edimax/uk/home_automation_smart_plug/sp-1101w/) _(untested)_
+ - [Shelly 1PM](https://shelly.cloud/shelly-1pm-wifi-smart-relay-home-automation/)
+ - [Shelly 1](https://shelly.cloud/shelly1-open-source/) _untested_
 
 _NOTE: If your Edimax plug uses recent firmware (v3) and you don't know your
 plug's password, please refer to [this guide][ediplug-troubleshoot] on how to
@@ -64,6 +66,23 @@ are, however, available as triggers in the automation editor UI.
 | Relay       | [Switch][haswitch] |                          |       |
 | Power       | [Sensor][hasensor] | Power usage              | `W`   |
 | Amperage    | [Sensor][hasensor] | Power current / amperage | `A`   |
+
+### Shelly 1PM
+
+| Name        | Device Type        | Value           | Units |
+| ----------- | ------------------ | --------------- | ----- |
+| Relay       | [Switch][haswitch] |                 |       |
+| Power       | [Sensor][hasensor] | Power usage     | `W`   |
+| Temperature | [Sensor][hasensor] | PCB Temperature | `°C`  |
+
+_Note that the temperature is the operating temperature of the device i.e. PCB
+temperature, not the room temperature._
+
+### Shelly 1
+
+| Name        | Device Type        | Value           | Units |
+| ----------- | ------------------ | --------------- | ----- |
+| Relay       | [Switch][haswitch] |                 |       |
 
 [hadevicetrigger]: https://www.home-assistant.io/integrations/device_trigger.mqtt/
 [hasensor]: https://www.home-assistant.io/integrations/sensor.mqtt/
@@ -133,6 +152,23 @@ are, however, available as triggers in the automation editor UI.
  - `username` _(optional; default: 'admin')_: Username to log in to the switch.
  - `password` _(required)_: Password to log in to the switch.
 
+### Shelly Switch Plugin Options
+
+ - `shelly-switch.mqttTopic` _(optional; default:
+   'http2mqtt/shelly/wifi_relays'): MQTT topic prefix undwe which to publish
+   switch states._
+ - `shelly-switch.switches` _(required)_: Configuration for each switch. Only
+   switches configured here will be handled.
+
+#### Switch Configuration
+
+ - `type` _(required)_: Either `"shelly-1"` or `"shelly-1pm"` for Shelly 1 or
+   Shelly 1PM respectively.
+ - `host` _(required)_: Host or IP address of the switch.
+ - `name` _(required)_: A friendly name for the switch.
+ - `username` _(optional; default: 'admin')_: Username to log in to the switch.
+ - `password` _(optional)_: Password to log in to the switch.
+
 ### Example
 
 ```json
@@ -187,6 +223,17 @@ are, however, available as triggers in the automation editor UI.
           "host": "10.13.37.45",
           "username": "admin",
           "password": "1234"
+        }
+      ]
+    },
+    "shelly-switch": {
+      "switches": [
+        {
+          "type": "shelly-1pm",
+          "host": "10.13.37.46",
+          "name": "Shelly 1PM",
+          "username": "chiefcommander",
+          "password": "s3cr3t"
         }
       ]
     }
