@@ -1,3 +1,6 @@
+import path from 'path';
+import Keyv from 'keyv';
+import KeyvFile from 'keyv-file';
 import wyt from 'wyt';
 import type { PluginInterface } from 'server/plugin-manager';
 import * as helpers from './helpers';
@@ -50,7 +53,11 @@ export async function initialize(
     config,
     logger,
     mqttClient,
+    getDataDir,
   } = plugin;
+
+  const dataDir = await getDataDir();
+  const cache = new Keyv({ store: new KeyvFile({ filename: path.join(dataDir, 'cache.json') }) });
 
   const { client } = opts;
 
@@ -285,37 +292,52 @@ export async function initialize(
   }
 
   async function announceSwitch(switchID: string): Promise<void> {
+    const cacheKey = `switchDetails-${switchID}`;
+    let details: SwitchDetails | undefined;
+    let availability = Availability.Offline;
     try {
-      const details = await client.getSwitchDetails(switchID);
-      if (!details) {
-        throw new Error(`Switch '${switchID}' not found`);
-      }
-
-      switchDetails[switchID] = details;
-
-      mqttClient.subscribe(
-        getSensorTopic(details, SensorType.RelayCommand),
-        (message: string) => {
-          const relayState = helpers.getRelayStateByValue(message);
-          if (relayState) {
-            handleRelayCommand(switchID, relayState);
-          }
-        },
-      );
-
-      if (config.homeAssistant && config.homeAssistant.discovery) {
-        const clientSensorTypes = client.getSensorTypes(switchID);
-        discover.announceSwitch(details, clientSensorTypes);
-      }
-
-      mqttClient.publish(
-        getSensorTopic(details, SensorType.Availability),
-        helpers.getAvailabilityValue(Availability.Online),
-        { retain: true },
-      );
+      details = await client.getSwitchDetails(switchID);
+      cache.set(cacheKey, details);
+      availability = Availability.Online;
+      console.log('ddd', details);
     } catch (err) {
-      logger.error(`Switch '${switchID}' unreachable`);
+      const cachedDetails = await cache.get(cacheKey) as SwitchDetails | undefined;
+      console.log('ccc', cachedDetails);
+      if (!cachedDetails) {
+        logger.error(`Switch '${switchID}' unreachable`);
+        return;
+      }
+
+      logger.warn(`Switch '${switchID}' (${cachedDetails.name}) unreachable, got details from cache`);
+      details = cachedDetails;
     }
+
+    if (!details) {
+      return;
+    }
+
+    switchDetails[switchID] = details;
+
+    mqttClient.subscribe(
+      getSensorTopic(details, SensorType.RelayCommand),
+      (message: string) => {
+        const relayState = helpers.getRelayStateByValue(message);
+        if (relayState) {
+          handleRelayCommand(switchID, relayState);
+        }
+      },
+    );
+
+    if (config.homeAssistant && config.homeAssistant.discovery) {
+      const clientSensorTypes = client.getSensorTypes(switchID);
+      discover.announceSwitch(details, clientSensorTypes);
+    }
+
+    mqttClient.publish(
+      getSensorTopic(details, SensorType.Availability),
+      helpers.getAvailabilityValue(availability),
+      { retain: true },
+    );
   }
 
   async function announceSwitches(): Promise<void> {
