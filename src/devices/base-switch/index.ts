@@ -299,10 +299,8 @@ export async function initialize(
       details = await client.getSwitchDetails(switchID);
       cache.set(cacheKey, details);
       availability = Availability.Online;
-      console.log('ddd', details);
     } catch (err) {
       const cachedDetails = await cache.get(cacheKey) as SwitchDetails | undefined;
-      console.log('ccc', cachedDetails);
       if (!cachedDetails) {
         logger.error(`Switch '${switchID}' unreachable`);
         return;
